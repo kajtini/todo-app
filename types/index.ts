@@ -4,4 +4,7 @@ export interface ITodo {
   updatedAt: Date;
   uid: string;
   title: string;
+  status: TodoStatus;
 }
+
+export type TodoStatus = "active" | "completed";

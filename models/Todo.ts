@@ -8,6 +8,12 @@ const todoSchema = new mongoose.Schema<ITodo>(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["active", "completed"],
+      default: "active",
+      message: "Status must be either active or completed",
+    },
   },
 
   { timestamps: true }

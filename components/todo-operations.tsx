@@ -65,7 +65,7 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
     }
   };
 
-  const handleToggleStatus = async (status: TodoStatus) => {
+  const handleStatusToggle = async (status: TodoStatus) => {
     try {
       const res = await fetch(`http://localhost:3000/api/todos/${_id}`, {
         method: "PATCH",
@@ -75,8 +75,9 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
         body: JSON.stringify({ status }),
       });
 
-      if (!res.ok) toast.error("Failed to remove todo");
+      if (!res.ok) toast.error("Failed to change todo status");
 
+      toast.success(`Sucessfully changed status to ${status}`);
       router.refresh();
     } catch (err) {
       console.log(err);
@@ -94,8 +95,8 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
           <DropdownMenuItem
             onClick={() =>
               status === "completed"
-                ? handleToggleStatus("active")
-                : handleToggleStatus("completed")
+                ? handleStatusToggle("active")
+                : handleStatusToggle("completed")
             }
           >
             {status === "completed" ? (

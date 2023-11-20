@@ -1,11 +1,14 @@
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+
 import AddTodoForm from "@/components/add-todo-form";
 import TodoItem from "@/components/todo-item";
 import dbConnect from "@/lib/mongoose";
 import Todo from "@/models/Todo";
-import { auth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import TodoFilters from "@/components/todo-filters";
+import { TodoStatus } from "@/types";
 
-const getTodos = async () => {
+const getTodos = async (status: TodoStatus | undefined) => {
   try {
     await dbConnect();
 
@@ -13,7 +16,13 @@ const getTodos = async () => {
 
     if (!userId) throw new Error("Unauthorized");
 
-    const todos = Todo.find().where({ uid: userId });
+    let query = Todo.find().where({ uid: userId }).sort({ createdAt: -1 });
+
+    if (status) {
+      query = query.where({ status: status });
+    }
+
+    const todos = await query;
 
     return todos;
   } catch (err) {
@@ -21,8 +30,13 @@ const getTodos = async () => {
   }
 };
 
-export default async function TodosPage() {
-  const todos = await getTodos();
+export default async function TodosPage({
+  searchParams,
+}: {
+  searchParams: { status: TodoStatus };
+}) {
+  const { status } = searchParams;
+  const todos = await getTodos(status);
 
   const { userId } = auth();
 
@@ -33,6 +47,8 @@ export default async function TodosPage() {
   return (
     <div className="flex flex-grow max-w-7xl mx-auto w-full px-7 py-7 flex-col gap-5">
       <AddTodoForm />
+
+      <TodoFilters />
 
       <ul className="flex flex-col gap-3">
         {todos?.map((todo) => (

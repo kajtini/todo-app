@@ -49,9 +49,9 @@ export async function PATCH(
       params: { todoId },
     } = params;
 
-    const data = await req.json();
+    const updateData = await req.json();
 
-    const updatedTodo = await Todo.findByIdAndUpdate(todoId, data);
+    const updatedTodo = await Todo.findByIdAndUpdate(todoId, updateData);
 
     return NextResponse.json({ data: { todo: updatedTodo } }, { status: 200 });
   } catch (err) {

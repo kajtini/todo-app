@@ -1,6 +1,7 @@
-import { UserButton } from "@clerk/nextjs";
 import { Orbit } from "lucide-react";
-import { ModeToggle } from "./mode-toggle";
+import { UserButton } from "@clerk/nextjs";
+
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default async function Header() {
   return (

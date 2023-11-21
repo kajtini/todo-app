@@ -33,13 +33,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ITodo, TodoStatus } from "@/types";
+import EditTodoDialog from "@/components/edit-todo-dialog";
 
 interface TodoOperationsProps {
-  todo: Pick<ITodo, "_id" | "status">;
+  todo: Pick<ITodo, "_id" | "status" | "title">;
 }
 
 export default function TodoOperations({ todo }: TodoOperationsProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isRemovingTodo, setIsRemovingTodo] = useState(false);
 
   const { _id, status } = todo;
@@ -57,7 +59,7 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
       if (!res.ok) toast.error("Failed to remove todo");
 
       setIsRemovingTodo(false);
-      setIsDialogOpen(false);
+      setIsDeleteDialogOpen(false);
       router.refresh();
     } catch (err) {
       setIsRemovingTodo(false);
@@ -111,12 +113,12 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
               </>
             )}
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
             <ClipboardEdit size={15} className="mr-3" />
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setIsDialogOpen(true)}
+            onClick={() => setIsDeleteDialogOpen(true)}
             className="text-destructive"
           >
             <Trash size={15} className="mr-3" />
@@ -125,7 +127,10 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -154,6 +159,12 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <EditTodoDialog
+        isEditDialogOpen={isEditDialogOpen}
+        setIsEditDialogOpen={setIsEditDialogOpen}
+        todo={todo}
+      />
     </>
   );
 }

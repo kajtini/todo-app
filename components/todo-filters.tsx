@@ -5,15 +5,17 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TodoStatus } from "@/types";
 
+type TodoFilter = TodoStatus | "all";
+
 const filters: {
   id: number;
   title: string;
-  value: TodoStatus | "";
+  value: TodoFilter;
 }[] = [
   {
     id: 0,
     title: "All",
-    value: "",
+    value: "all",
   },
   {
     id: 1,
@@ -34,11 +36,11 @@ export default function TodoFilters() {
 
   const search = searchParams.get("status")?.toString();
 
-  const handleFilterClick = (status: TodoStatus | "") => {
+  const handleFilterClick = (filter: TodoFilter) => {
     const searchParams = new URLSearchParams();
 
-    if (status) {
-      searchParams.set("status", status);
+    if (filter && filter !== "all") {
+      searchParams.set("status", filter);
     } else {
       searchParams.delete("status");
     }
@@ -58,7 +60,7 @@ export default function TodoFilters() {
             variant="ghost"
             size="sm"
             className={`${
-              search === filter.value || (!search && filter.value === "")
+              search === filter.value || (!search && filter.value === "all")
                 ? "bg-accent"
                 : "bg-background"
             } capitalize`}

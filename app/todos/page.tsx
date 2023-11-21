@@ -35,20 +35,25 @@ export default async function TodosPage({
 }: {
   searchParams: { status: TodoStatus };
 }) {
-  const { status } = searchParams;
-  const todos = await getTodos(status);
-
   const { userId } = auth();
 
   if (!userId) {
     redirect("/sign-up");
   }
 
+  const { status } = searchParams;
+  const todos = await getTodos(status);
+
   return (
     <div className="flex flex-grow max-w-7xl mx-auto w-full px-7 py-7 flex-col gap-5">
       <AddTodoForm />
-
       <TodoFilters />
+
+      {todos?.length === 0 && (
+        <p className="text-muted-foreground">
+          You have no {!!status && status} todos
+        </p>
+      )}
 
       <ul className="flex flex-col gap-3">
         {todos?.map((todo) => (

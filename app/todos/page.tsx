@@ -1,11 +1,9 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-import AddTodoForm from "@/components/add-todo-form";
 import TodoItem from "@/components/todo-item";
 import dbConnect from "@/lib/mongoose";
 import Todo from "@/models/Todo";
-import TodoFilters from "@/components/todo-filters";
 import { TodoStatus } from "@/types";
 
 const getTodos = async (status: TodoStatus | undefined) => {
@@ -42,13 +40,11 @@ export default async function TodosPage({
   }
 
   const { status } = searchParams;
+
   const todos = await getTodos(status);
 
   return (
-    <div className="flex flex-grow max-w-7xl mx-auto w-full px-7 py-7 flex-col gap-5">
-      <AddTodoForm />
-      <TodoFilters />
-
+    <>
       {todos?.length === 0 && (
         <p className="text-muted-foreground">
           You have no {!!status && status} todos
@@ -60,6 +56,6 @@ export default async function TodosPage({
           <TodoItem key={todo._id} todo={JSON.parse(JSON.stringify(todo))} />
         ))}
       </ul>
-    </div>
+    </>
   );
 }

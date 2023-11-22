@@ -1,5 +1,11 @@
 "use client";
 
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2, Trash } from "lucide-react";
+import { toast } from "sonner";
+
 import {
   Dialog,
   DialogContent,
@@ -20,8 +26,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ITodo } from "@/types";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useEffect } from "react";
 
 interface EditTodoDialogProps {
   isEditDialogOpen: boolean;
@@ -38,6 +42,10 @@ export default function EditTodoDialog({
   setIsEditDialogOpen,
   todo,
 }: EditTodoDialogProps) {
+  const [isTodoUpdating, setIsTodoUpdating] = useState(false);
+
+  const router = useRouter();
+
   const { _id, title } = todo;
 
   const form = useForm<IFormInput>({
@@ -46,7 +54,29 @@ export default function EditTodoDialog({
     },
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {};
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      setIsTodoUpdating(true);
+
+      const res = await fetch(`http://localhost:3000/api/todos/${_id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) toast.error("Failed to update todo");
+
+      setIsTodoUpdating(false);
+      setIsEditDialogOpen(false);
+      router.refresh();
+      toast.success("Todo successfully updated");
+    } catch (err) {
+      setIsTodoUpdating(false);
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     form.reset({
@@ -84,8 +114,16 @@ export default function EditTodoDialog({
               )}
             />
 
-            <Button type="submit" className="self-end">
-              Save
+            <Button
+              type="submit"
+              className="self-end"
+              disabled={isTodoUpdating}
+            >
+              {isTodoUpdating && (
+                <Loader2 size={18} className="animate-spin mr-2" />
+              )}
+
+              <span>Save</span>
             </Button>
           </form>
         </Form>

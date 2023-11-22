@@ -79,8 +79,8 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
 
       if (!res.ok) toast.error("Failed to change todo status");
 
-      toast.success(`Sucessfully changed status to ${status}`);
       router.refresh();
+      toast.success(`Sucessfully changed status to ${status}`);
     } catch (err) {
       console.log(err);
     }

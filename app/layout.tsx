@@ -1,7 +1,8 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { dark } from "@clerk/themes";
+import type { Metadata } from "next";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
@@ -20,10 +21,16 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <ClerkProvider>
+      <ClerkProvider
+        appearance={{
+          baseTheme: dark,
+        }}
+        afterSignInUrl="/todos"
+        afterSignUpUrl="/todos"
+      >
         <body className={inter.className}>
-          <Toaster richColors />
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Toaster richColors />
             {children}
           </ThemeProvider>
         </body>

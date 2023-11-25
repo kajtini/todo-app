@@ -37,7 +37,7 @@ export default function TodoFilters() {
   const search = searchParams.get("status")?.toString();
 
   const handleFilterClick = (filter: TodoFilter) => {
-    const searchParams = new URLSearchParams();
+    const searchParams = new URLSearchParams(window.location.search);
 
     if (filter && filter !== "all") {
       searchParams.set("status", filter);

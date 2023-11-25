@@ -4,9 +4,14 @@ import { redirect } from "next/navigation";
 import TodoItem from "@/components/todo-item";
 import dbConnect from "@/lib/mongoose";
 import Todo from "@/models/Todo";
-import { TodoStatus } from "@/types";
+import { ITodo, TodoStatus } from "@/types";
+import TodoPagination from "@/components/todo-pagination";
+import { PER_PAGE } from "@/lib/constants";
 
-const getTodos = async (status: TodoStatus | undefined) => {
+const getTodos = async (
+  status: TodoStatus | undefined,
+  page: string = "1"
+): Promise<{ todos: ITodo[]; totalTodos: number }> => {
   try {
     await dbConnect();
 
@@ -14,24 +19,33 @@ const getTodos = async (status: TodoStatus | undefined) => {
 
     if (!userId) throw new Error("Unauthorized");
 
-    let query = Todo.find().where({ uid: userId }).sort({ createdAt: -1 });
+    let query = Todo.find().where({ uid: userId }).sort({ updatedAt: -1 });
 
     if (status) {
       query = query.where({ status: status });
     }
 
-    const todos = await query;
+    const queryClone = query.clone();
 
-    return todos;
+    if (page) {
+      query = query.limit(PER_PAGE).skip(PER_PAGE * +page - PER_PAGE);
+    }
+
+    const todos: ITodo[] = await query;
+    const totalTodos = (await queryClone).length;
+
+    return { todos, totalTodos };
   } catch (err) {
     console.log(`Error while fetching todos: ${err}`);
+
+    throw new Error(`${err}`);
   }
 };
 
 export default async function TodosPage({
   searchParams,
 }: {
-  searchParams: { status: TodoStatus };
+  searchParams: { status: TodoStatus; page: string };
 }) {
   const { userId } = auth();
 
@@ -39,9 +53,9 @@ export default async function TodosPage({
     redirect("/sign-up");
   }
 
-  const { status } = searchParams;
+  const { status, page } = searchParams;
 
-  const todos = await getTodos(status);
+  const { todos, totalTodos } = await getTodos(status, page);
 
   return (
     <>
@@ -56,6 +70,8 @@ export default async function TodosPage({
           <TodoItem key={todo._id} todo={JSON.parse(JSON.stringify(todo))} />
         ))}
       </ul>
+
+      <TodoPagination totalTodos={totalTodos} />
     </>
   );
 }

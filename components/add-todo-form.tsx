@@ -44,7 +44,10 @@ export default function AddTodoForm() {
         body: JSON.stringify({ ...data }),
       });
 
-      if (!res.ok) throw new Error("Failed to create a todo");
+      if (!res.ok) {
+        toast.error("Failed to create a todo");
+        throw new Error("Failed to create a todo");
+      }
 
       form.reset();
       router.refresh();

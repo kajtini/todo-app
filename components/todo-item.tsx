@@ -15,7 +15,6 @@ export default function TodoItem({ todo }: TodoItemProps) {
     day: "numeric",
   };
 
-  const createdAt = new Date(todo.createdAt).toLocaleString("en-US", options);
   const updatedAt = new Date(todo.updatedAt).toLocaleString("en-US", options);
 
   return (

@@ -58,13 +58,16 @@ export default function EditTodoDialog({
     try {
       setIsTodoUpdating(true);
 
-      const res = await fetch(`http://localhost:3000/api/todos/${_id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${_id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!res.ok) toast.error("Failed to update todo");
 

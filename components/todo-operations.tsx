@@ -52,9 +52,12 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
     try {
       setIsRemovingTodo(true);
 
-      const res = await fetch(`http://localhost:3000/api/todos/${_id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${_id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!res.ok) toast.error("Failed to remove todo");
 
@@ -69,13 +72,16 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
 
   const handleStatusToggle = async (status: TodoStatus) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/todos/${_id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${_id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status }),
+        }
+      );
 
       if (!res.ok) toast.error("Failed to change todo status");
 

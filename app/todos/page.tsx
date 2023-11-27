@@ -57,6 +57,8 @@ export default async function TodosPage({
 
   const { todos, totalTodos } = await getTodos(status, page);
 
+  console.log();
+
   return (
     <>
       {todos?.length === 0 && (

@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ITodo, TodoStatus } from "@/types";
 import EditTodoDialog from "@/components/edit-todo-dialog";
+import { API_URL } from "@/lib/constants";
 
 interface TodoOperationsProps {
   todo: Pick<ITodo, "_id" | "status" | "title">;
@@ -52,12 +53,9 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
     try {
       setIsRemovingTodo(true);
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${_id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const res = await fetch(`${API_URL}/api/todos/${_id}`, {
+        method: "DELETE",
+      });
 
       if (!res.ok) toast.error("Failed to remove todo");
 
@@ -72,16 +70,13 @@ export default function TodoOperations({ todo }: TodoOperationsProps) {
 
   const handleStatusToggle = async (status: TodoStatus) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${_id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status }),
-        }
-      );
+      const res = await fetch(`${API_URL}/api/todos/${_id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
 
       if (!res.ok) toast.error("Failed to change todo status");
 

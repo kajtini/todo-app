@@ -71,7 +71,10 @@ export default async function TodosPage({
         ))}
       </ul>
 
-      <TodoPagination totalTodos={totalTodos} />
+      <TodoPagination
+        currentPageTodosNum={todos.length}
+        totalTodos={totalTodos}
+      />
     </>
   );
 }

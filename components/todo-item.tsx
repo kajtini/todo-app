@@ -21,10 +21,12 @@ export default function TodoItem({ todo }: TodoItemProps) {
   return (
     <li className="px-4 py-3 border-border border rounded-lg">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 overflow-hidden">
           <div>
             <p>{todo.title}</p>
-            <p className="text-sm text-muted-foreground">{createdAt}</p>
+            <p className="text-sm text-muted-foreground">
+              Last updated ({updatedAt})
+            </p>
           </div>
           <Badge variant={`${status === "active" ? "secondary" : "default"}`}>
             {todo.status}

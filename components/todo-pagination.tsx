@@ -5,12 +5,17 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { PER_PAGE } from "@/lib/constants";
+import { useEffect } from "react";
 
 interface TodoPaginationProps {
   totalTodos: number;
+  currentPageTodosNum: number;
 }
 
-export default function TodoPagination({ totalTodos }: TodoPaginationProps) {
+export default function TodoPagination({
+  totalTodos,
+  currentPageTodosNum,
+}: TodoPaginationProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -47,6 +52,12 @@ export default function TodoPagination({ totalTodos }: TodoPaginationProps) {
       handlePageUpdate(+currentPage + 1);
     }
   };
+
+  useEffect(() => {
+    if (!currentPageTodosNum) {
+      handlePageUpdate(+currentPage - 1);
+    }
+  }, [totalTodos]);
 
   if (PER_PAGE >= totalTodos || !totalTodos) {
     return null;

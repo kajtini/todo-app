@@ -2,10 +2,10 @@
 
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { PER_PAGE } from "@/lib/constants";
-import { useEffect } from "react";
 
 interface TodoPaginationProps {
   totalTodos: number;

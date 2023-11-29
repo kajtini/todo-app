@@ -25,8 +25,6 @@ export default async function RootLayout({
         appearance={{
           baseTheme: dark,
         }}
-        afterSignInUrl="/todos"
-        afterSignUpUrl="/todos"
       >
         <body className={inter.className}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
